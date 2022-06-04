@@ -35,16 +35,23 @@ export class TasksService {
 
   //Delete a Task by its ID
   deleteTaskById(id: string): void {
-
-    // Deleteing using 'splice'
+    // Method-1:  Deleteing using 'splice'
     // const index: number = this.tasks
     //   .map((targetTask) => targetTask.id)
     //   .indexOf(id);
     // console.log(`deleted task index = ${index}`);
     // this.tasks.splice(index, 1); //delete 1 item at location 'index'
 
-    //deleteing using filter to create a new array (excluding the item with the id) and replace the old one with the new
-    this.tasks = this.tasks.filter( (taskToDelete) => taskToDelete.id !== id );
+    // Method-2: Deleteing using the filter array method to create a new array (excluding the item with the id) and replace the old one with the new
+    this.tasks = this.tasks.filter((taskToDelete) => taskToDelete.id !== id);
+  }
 
+  //Update the status of a task by its ID
+  updateTaskStatus(id: string, newStatus: TaskStatus): Task {
+    const task: Task = this.getTaskById(id);
+
+    task.status = newStatus;
+
+    return task;
   }
 }
