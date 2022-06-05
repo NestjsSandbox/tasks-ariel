@@ -37,7 +37,6 @@ export class TasksService {
 
     if (status) {
       filteredTasks = filteredTasks.filter((element) => element.status === status);
-      console.log(`filteredTasks = ${filteredTasks}`)
     }
 
     if (search) {
