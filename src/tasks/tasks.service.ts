@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { v4 as uuid } from 'uuid';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { GetTasksFilterDto } from './dtos/get-tasks-filter.dto';
+import { NotFoundError } from 'rxjs';
+import { UpdateTaskDto } from './dtos/update-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -54,7 +56,13 @@ export class TasksService {
 
   //Get a Task by its ID
   getTaskById(id: string): Task {
-    return this.tasks.find((element) => element.id === id);
+    const foundTask: Task =  this.tasks.find((element) => element.id === id);
+
+    if (!foundTask){
+        throw new NotFoundException(`The task with id ${id} wasnt found`);
+    } else {
+      return foundTask;
+    }
   }
 
   //Delete a Task by its ID
@@ -67,10 +75,14 @@ export class TasksService {
     // this.tasks.splice(index, 1); //delete 1 item at location 'index'
 
     // Method-2: Deleteing using the filter array method to create a new array (excluding the item with the id) and replace the old one with the new
+
+    this.getTaskById(id); //If the id doesnt exist then the function throws a 404 error and breaks from this method (wont continue to next line)
+
     this.tasks = this.tasks.filter((taskToDelete) => taskToDelete.id !== id);
   }
 
   //Update the status of a task by its ID
+ // updateTaskStatus(id: string, newStatus: TaskStatus): Task {
   updateTaskStatus(id: string, newStatus: TaskStatus): Task {
     const task: Task = this.getTaskById(id);
 
