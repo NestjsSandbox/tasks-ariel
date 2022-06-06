@@ -3,8 +3,6 @@ import { Task, TaskStatus } from './task.model';
 import { v4 as uuid } from 'uuid';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { GetTasksFilterDto } from './dtos/get-tasks-filter.dto';
-import { NotFoundError } from 'rxjs';
-import { UpdateTaskDto } from './dtos/update-task.dto';
 
 @Injectable()
 export class TasksService {
