@@ -2,10 +2,14 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { TasksModule } from './tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Task } from './tasks/entities/task.entity';
+import { DataSource } from 'typeorm';
 
 
 @Module({
   imports: [TasksModule,
+        //Importing and configuring the TYpeOrm into 
+        //this app.module (the root module)
             TypeOrmModule.forRoot({
               type: 'postgres',
               host: 'localhost',
@@ -13,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
               username: 'postgres',
               password: 'postgres',
               database: 'task-management',
+              entities: [Task],
               autoLoadEntities: true,
               synchronize: true
             }),
@@ -24,4 +29,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     },
   ],
 })
-export class AppModule {}
+
+export class AppModule {
+  // The TypeORM DataSource and EntityManager objects are now available
+  // to inject across the entire project. Example:
+  
+  // constructor(private dataSource: DataSource) {}
+}
+

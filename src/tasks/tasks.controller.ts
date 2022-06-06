@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { Task, TaskStatus } from './task.model';
+import { TaskStatus } from './enums/task-status.enum';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { GetTasksFilterDto } from './dtos/get-tasks-filter.dto';
 import { UpdateTaskDto } from './dtos/update-task.dto';
+import { Task } from './entities/task.entity';
 
 @Controller('tasks')
 export class TasksController {
@@ -12,39 +13,33 @@ export class TasksController {
 
   //Create a task
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Task{
-    return this.taskService.createTask(createTaskDto);
+  async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task>{
+    return await this.taskService.createTask(createTaskDto);
   }
 
   //Get tasks either by filter or if no filter then get all tasks
   @Get()
-  getTasks(@Query() filterDto: GetTasksFilterDto): Task[]{
-
-    if (Object.keys(filterDto).length) {
-      return this.taskService.getTasksWithFilter(filterDto);
-    } else {
-      return this.taskService.getAllTasks();
-    }
+  async getTasks(@Query() filterDto: GetTasksFilterDto): Promise<Task[]>{
+    return this.taskService.getTasks(filterDto);
   }
-
 
   //Get a task by id
   @Get('/:id')
-  getTaskById(@Param('id') id: string): Task{
+  getTaskById(@Param('id') id: string): Promise<Task>{
     return this.taskService.getTaskById(id);
   }
 
   //Delete task by Id
   @Delete('/:id')
-  deleteTaskById(@Param('id') id: string): void{
+  async deleteTaskById(@Param('id') id: string): Promise<void>{
     return this.taskService.deleteTaskById(id); // THe 'return' is optional since we are returning void
   }
 
   @Patch('/:id/status')
-  updateTaskStatus(
+  async updateTaskStatus(
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
-  ): Task{
+  ): Promise<Task>{
       const {status} = updateTaskDto;
       return this.taskService.updateTaskStatus(id, status);
   }
