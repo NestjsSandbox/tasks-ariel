@@ -31,8 +31,27 @@ export class TasksService {
   }//end createTask
 
   //Get all the tasks
-  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
-    return ;
+  async getTasks({ status, search }: GetTasksFilterDto): Promise<Task[]> {
+
+    const query = this.taskRepository.createQueryBuilder('qtask');
+
+    if (status){
+      query.andWhere('qtask.status = :tStatus', { tStatus: status} );
+    }
+
+    if (search){
+      query.andWhere(
+        // The Case senstive version:
+        // 'qtask.title LIKE :tSearch OR qtask.description LIKE :tSearch',
+
+        //The non-case sesntive ver
+        'LOWER(qtask.title) LIKE LOWER(:tSearch) OR LOWER(qtask.description) LIKE LOWER(:tSearch)',
+        { tSearch: `%${search}%`}, 
+      );
+    }
+
+    const tasks = query.getMany();
+    return tasks;
   }
   
 
