@@ -1,6 +1,6 @@
 //* auth.service.ts
 
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -37,5 +37,23 @@ export class AuthService {
                 throw new InternalServerErrorException('Username given caused server error');
             }
         }
-    }
-}
+    }//end createUser
+
+    async signinUser(authCredentialsDto: CreateUserDto): Promise<string>{
+
+        const {name , password } = authCredentialsDto;
+
+        const foundUser = await this.userRepository.findOne(
+            {
+                where: {
+                    name: name,
+                },
+      });
+
+        if (foundUser && (await bcrypt.compare(password, foundUser.password)) ){
+            return 'Login success';
+        } else {
+            throw new UnauthorizedException(`Wrong credentials.`);
+        }
+    }//end signinUser
+}//end AuthService
