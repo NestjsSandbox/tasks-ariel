@@ -14,6 +14,7 @@ export class TasksController {
   //Create a task
   @Post()
   async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task>{
+    //console.log(`body = `, createTaskDto);
     return await this.taskService.createTask(createTaskDto);
   }
 

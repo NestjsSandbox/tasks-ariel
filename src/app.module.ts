@@ -3,7 +3,8 @@ import { APP_PIPE } from '@nestjs/core';
 import { TasksModule } from './tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from './tasks/entities/task.entity';
-import { DataSource } from 'typeorm';
+//import { DataSource } from 'typeorm';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -21,6 +22,7 @@ import { DataSource } from 'typeorm';
               autoLoadEntities: true,
               synchronize: true
             }),
+        AuthModule,
           ],
   providers: [
     {

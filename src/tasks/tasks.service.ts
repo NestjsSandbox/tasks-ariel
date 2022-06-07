@@ -1,3 +1,5 @@
+// * tasks.service.ts
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './enums/task-status.enum';
 import { CreateTaskDto } from './dtos/create-task.dto';
@@ -42,7 +44,7 @@ export class TasksService {
     if (search){
       query.andWhere(
         // The Case senstive version:
-        // 'qtask.title LIKE :tSearch OR qtask.description LIKE :tSearch',
+        //* 'qtask.title LIKE :tSearch OR qtask.description LIKE :tSearch',
 
         //The non-case sesntive ver
         'LOWER(qtask.title) LIKE LOWER(:tSearch) OR LOWER(qtask.description) LIKE LOWER(:tSearch)',
