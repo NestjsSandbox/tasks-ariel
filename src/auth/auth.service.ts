@@ -6,11 +6,18 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayloadInterface } from './helpers/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
 
-    constructor( @InjectRepository(User) private userRepository: Repository<User>){}
+    constructor(
+         @InjectRepository(User) 
+         private userRepository: Repository<User>,
+         
+         private jwtService: JwtService,
+    ){}
 
     async createUser(authCredentialsDto: CreateUserDto): Promise<void>{
 
@@ -39,8 +46,7 @@ export class AuthService {
         }
     }//end createUser
 
-    async signinUser(authCredentialsDto: CreateUserDto): Promise<string>{
-
+    async signinUser(authCredentialsDto: CreateUserDto): Promise< { acessToken: string} >{
         const {name , password } = authCredentialsDto;
 
         const foundUser = await this.userRepository.findOne(
@@ -51,7 +57,11 @@ export class AuthService {
       });
 
         if (foundUser && (await bcrypt.compare(password, foundUser.password)) ){
-            return 'Login success';
+            
+            const payload: JwtPayloadInterface = { name };
+            const acessToken: string = await this.jwtService.sign(payload);
+            console.log('Login success');
+            return { acessToken };
         } else {
             throw new UnauthorizedException(`Wrong credentials.`);
         }
