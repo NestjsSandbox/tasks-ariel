@@ -4,7 +4,7 @@ import { ConflictException, Injectable, InternalServerErrorException, Unauthoriz
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadInterface } from './jwt/jwt-payload.interface';
