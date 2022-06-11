@@ -37,23 +37,30 @@ export class TasksController {
 
   //Get a task by id
   @Get('/:id')
-  getTaskById(@Param('id') id: string): Promise<Task>{
-    return this.taskService.getTaskById(id);
+  getTaskById(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<Task>{
+    return this.taskService.getTaskById(id, user);
   }
 
   //Delete task by Id
   @Delete('/:id')
-  async deleteTaskById(@Param('id') id: string): Promise<void>{
-    return this.taskService.deleteTaskById(id); // THe 'return' is optional since we are returning void
+  async deleteTaskById(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<void>{
+    return this.taskService.deleteTaskById(id,user); // The 'return' is optional since we are returning void
   }
 
   @Patch('/:id/status')
   async updateTaskStatus(
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
+    @GetUser() user: User,
   ): Promise<Task>{
       const {status} = updateTaskDto;
-      return this.taskService.updateTaskStatus(id, status);
+      return this.taskService.updateTaskStatus(id, status, user);
   }
 
 }

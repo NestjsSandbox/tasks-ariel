@@ -62,29 +62,37 @@ export class TasksService {
   
 
 //Get a Task by its ID
-         async getTaskById(searchId: string): Promise<Task> {
-            const foundTask = await this.taskRepository.findOne(
+         async getTaskById(searchId: string, user: User): Promise<Task> {
+
+          const foundTask = await this.taskRepository.findOne(
                 {
                     where: {
                         id: searchId,
+                        user: user
                     },
                 }
-            )
+          )
 
-            if (!foundTask){
+          if (!foundTask){
               throw new NotFoundException(`The task with id ${searchId} wasnt found`);
-            }
+          }
             
-            return foundTask;
+          return foundTask;
             
         }//end getTaskById
 
 
 
   //Delete a Task by its ID
-  async deleteTaskById(id: string): Promise<void> {
+  async deleteTaskById(id: string, user: User): Promise<void> {
 
-    const result = await this.taskRepository.delete(id); 
+    // const task = await this.getTaskById(id,user);
+
+    // if (!task) {
+    //     throw new NotFoundException(`Can not delete, the task with id ${id} wasnt found`);
+    // }
+
+    const result = await this.taskRepository.delete( {id, user}); 
 
     if (result.affected === 0){
         throw new NotFoundException(`Cant delete - the task with id ${id} wasnt found`);
@@ -94,11 +102,11 @@ export class TasksService {
 
   //Update the status of a task by its ID
  // updateTaskStatus(id: string, newStatus: TaskStatus): Task {
-  async updateTaskStatus(id: string, newStatus: TaskStatus): Promise<Task> {
-    const task = await this.getTaskById(id);
+  async updateTaskStatus(id: string, newStatus: TaskStatus, user: User): Promise<Task> {
+    const task = await this.getTaskById(id,user);
 
     if (!task) {
-        throw new NotFoundException(`The task with id ${id} wasnt found`);
+        throw new NotFoundException(`Can not update, the task with id ${id} wasnt found`);
     }
 
     task.status = newStatus;
