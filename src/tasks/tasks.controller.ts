@@ -1,12 +1,14 @@
 //* tasks.controller.ts
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-//import { TaskStatus } from './enums/task-status.enum';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { GetTasksFilterDto } from './dtos/get-tasks-filter.dto';
 import { UpdateTaskDto } from './dtos/update-task.dto';
 import { Task } from './entities/task.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../auth/entities/user.entity';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
@@ -16,9 +18,12 @@ export class TasksController {
 
   //Create a task
   @Post()
-  async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task>{
+  async createTask(
+      @Body() createTaskDto: CreateTaskDto,
+      @GetUser() user:User,
+  ): Promise<Task>{
     //console.log(`body = `, createTaskDto);
-    return await this.taskService.createTask(createTaskDto);
+    return await this.taskService.createTask(createTaskDto,user);
   }
 
   //Get tasks either by filter or if no filter then get all tasks

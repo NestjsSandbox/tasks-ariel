@@ -1,4 +1,6 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+//* user.entity.ts
+
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Task } from "../../tasks/entities/task.entity";
 
 
@@ -14,7 +16,7 @@ export class User{
     @Column()
     password: string;
 
-    @OneToMany((_type) => Task, task => task.user, { eager : true })
+    @OneToMany((_type) => Task, (task) => task.user, { eager : true })
     tasks: Task[];
 
 }
