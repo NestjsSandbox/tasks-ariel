@@ -28,8 +28,11 @@ export class TasksController {
 
   //Get tasks either by filter or if no filter then get all tasks
   @Get()
-  async getTasks(@Query() filterDto: GetTasksFilterDto): Promise<Task[]>{
-    return this.taskService.getTasks(filterDto);
+  async getTasks(
+      @Query() filterDto: GetTasksFilterDto,
+      @GetUser() user:User,
+  ): Promise<Task[]>{
+    return this.taskService.getTasks(filterDto,user);
   }
 
   //Get a task by id

@@ -35,9 +35,11 @@ export class TasksService {
   }//end createTask
 
   //Get all the tasks
-  async getTasks({ status, search }: GetTasksFilterDto): Promise<Task[]> {
+  async getTasks({ status, search }: GetTasksFilterDto, user: User): Promise<Task[]> {
 
     const query = this.taskRepository.createQueryBuilder('qtask');
+
+    query.where( {user} );  //filters only the tasks that have the specific user object passed as input
 
     if (status){
       query.andWhere('qtask.status = :tStatus', { tStatus: status} );
@@ -49,7 +51,7 @@ export class TasksService {
         //* 'qtask.title LIKE :tSearch OR qtask.description LIKE :tSearch',
 
         //The non-case sesntive ver
-        'LOWER(qtask.title) LIKE LOWER(:tSearch) OR LOWER(qtask.description) LIKE LOWER(:tSearch)',
+        '(LOWER(qtask.title) LIKE LOWER(:tSearch) OR LOWER(qtask.description) LIKE LOWER(:tSearch))',
         { tSearch: `%${search}%`}, 
       );
     }
