@@ -1,6 +1,6 @@
 // * tasks.service.ts
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './enums/task-status.enum';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { GetTasksFilterDto } from './dtos/get-tasks-filter.dto';
@@ -8,10 +8,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm';
 import { User } from '../auth/entities/user.entity';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class TasksService {
-    
+ 
+  private logger = new Logger('TasksService', {timestamp: true});
+
     constructor(
         @InjectRepository(Task)
         private taskRepository: Repository<Task>
@@ -56,8 +59,16 @@ export class TasksService {
       );
     }
 
-    const tasks = query.getMany();
-    return tasks;
+    try {
+      
+      const tasks = query.getMany();
+      return tasks;
+
+    } catch (error) {
+      this.logger.error(`Failed fetching tasks for user "${user.name}". Filters status: ${status} and search: ${search}`, error.stack);
+
+      throw new InternalServerErrorException();
+    }
   }
   
 

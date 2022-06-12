@@ -9,20 +9,35 @@ import { Task } from './entities/task.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../auth/entities/user.entity';
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
 
-  constructor(private taskService: TasksService){}
 
+  private logger = new Logger('TaskController');
+
+  constructor(
+    private taskService: TasksService,
+    private configService: ConfigService,
+  ){
+      console.log('MY_VAR = ',configService.get('MY_VAR'));
+    }
+
+    
   //Create a task
   @Post()
   async createTask(
       @Body() createTaskDto: CreateTaskDto,
       @GetUser() user:User,
   ): Promise<Task>{
-    //console.log(`body = `, createTaskDto);
+
+    this.logger.verbose(
+      `User named "${user.name}" is cretaing a new task with these values: ${ JSON.stringify(createTaskDto)}`
+    );
+
     return await this.taskService.createTask(createTaskDto,user);
   }
 
@@ -32,6 +47,11 @@ export class TasksController {
       @Query() filterDto: GetTasksFilterDto,
       @GetUser() user:User,
   ): Promise<Task[]>{
+
+    this.logger.verbose(
+      `User named ${user.name} is using this filter ${ JSON.stringify(filterDto)}`
+    );
+
     return this.taskService.getTasks(filterDto,user);
   }
 

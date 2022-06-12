@@ -5,10 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from './tasks/entities/task.entity';
 //import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
-  imports: [TasksModule,
+  imports: [
+            ConfigModule.forRoot({
+              isGlobal: true,
+              envFilePath: `.env.${process.env.NODE_ENV}`,
+              //envFilePath: `.env.dev`,
+            }),
+            TasksModule,
         //Importing and configuring the TYpeOrm into 
         //this app.module (the root module)
             TypeOrmModule.forRoot({
