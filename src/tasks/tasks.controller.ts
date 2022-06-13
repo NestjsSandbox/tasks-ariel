@@ -23,7 +23,7 @@ export class TasksController {
     private taskService: TasksService,
     private configService: ConfigService,
   ){
-      console.log('MY_VAR = ',configService.get('MY_VAR'));
+      console.log('CURRENT_ENV = ',configService.get('CURRENT_ENV'));
     }
 
     
