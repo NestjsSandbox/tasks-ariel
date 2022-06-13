@@ -7,18 +7,20 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { User } from "../entities/user.entity";
 import { JwtPayloadInterface } from "./jwt-payload.interface";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor (
         @InjectRepository(User) 
-        private userRepository: Repository<User>
+        private userRepository: Repository<User>,
+        private configService: ConfigService,
     ){
 
         super({ //We call super because we constructed a class derived from another class (aka 'super')
                  //In the super method we initialize values into the super class (PassportStartegy in this case)
 
-                 secretOrKey: 'someSecret',
+                 secretOrKey: configService.get('JWT_SECRET'),
                  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         });
     }
