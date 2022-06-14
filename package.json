@@ -16,7 +16,7 @@
     "oldstart:debug": "nest start --debug --watch",
     "start:debug": "export NODE_ENV=dev || set NODE_ENV=dev& nest start --debug --watch",
     "oldstart:prod": "node dist/main",
-    "start:prod": "export NODE_ENV=prod || set NODE_ENV=prod& node dist/main",
+    "start:prod": "export NODE_ENV=production || set NODE_ENV=production& node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "oldtest": "jest",
     "test": "export NODE_ENV=test || set NODE_ENV=test& jest",

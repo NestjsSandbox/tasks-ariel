@@ -25,8 +25,17 @@ import { configValidation } from './config.schema';
               imports: [ConfigModule], //Here we tell the DI from the useFActory what module we dependend on.
               inject: [ConfigService],  //Here we tell the DI what we need to inject from the imported modules.
               useFactory:async (configService: ConfigService) => { //Here we do DI of ConfigService.
-                return { //the contents below are what is returned to the TypeOrmModule
-                         // after the async finished and got what it was waiting for.
+
+                const isProduction = configService.get('NODE_ENV') === 'production';
+
+                return { 
+                  
+                    ssl: isProduction,
+                    extra: {
+                      ssl: isProduction ? { rejectUnauthorized: false } : null,
+                    },
+                    //the contents below are what is returned to the TypeOrmModule
+                    // after the async finished and got what it was waiting for.
                     type: 'postgres',
                     autoLoadEntities: true,
                     synchronize: true,
